@@ -1,0 +1,1 @@
+export const baseUrl = 'https://api.efood.tailormaster.xyz/api/v1';

@@ -1,0 +1,73 @@
+[
+    {
+      "icon": "FaTachometerAlt",
+      "name": "Dashboard",
+      "path": "/dashboard"
+    },
+    {
+      "icon": "FaBook",
+      "name": "Menu",
+      "path": "/menu"
+    },
+    {
+      "icon": "FaTags",
+      "name": "Promo",
+      "subMenu": [
+        {
+          "icon": "FaBox",
+          "name": "Stock",
+          "path": "/stock"
+        },
+        {
+          "icon": "FaQrcode",
+          "name": "QR Code",
+          "path": "/qr-code"
+        }
+      ]
+    },
+    {
+      "icon": "FaHistory",
+      "name": "History",
+      "subMenu": [
+        {
+          "icon": "FaHistory",
+          "name": "Order History",
+          "path": "/order-history"
+        }
+      ]
+    },
+    {
+      "icon": "FaUsers",
+      "name": "Users",
+      "subMenu": [
+        {
+          "icon": "FaUsers",
+          "name": "Employees",
+          "path": "/employee"
+        }
+      ]
+    },
+    {
+      "icon": "FaChartBar",
+      "name": "Reports",
+      "subMenu": [
+        {
+          "icon": "FaChartBar",
+          "name": "Sales Report",
+          "path": "/sales-report"
+        }
+      ]
+    },
+    {
+      "icon": "FaSignOutAlt",
+      "name": "Setup",
+      "subMenu": [
+        {
+          "icon": "FaSignOutAlt",
+          "name": "Sign Out",
+          "path": "/sign-out"
+        }
+      ]
+    }
+  ]
+  

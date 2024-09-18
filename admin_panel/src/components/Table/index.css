@@ -1,0 +1,105 @@
+.head {
+  width: 700px;
+  height: 500px;
+  background-color: #ffffff;
+}
+.top-head {
+  margin-top: 361px;
+  background-color: #ffffff;
+}
+
+.btn {
+  color: #fef4f2;
+}
+
+.btn1 {
+  background-color: #ffa901;
+  border-radius: 16px;
+  padding-left: 25px;
+  padding-right: 25px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+.btn2 {
+  background-color: #d30e0e;
+  border-radius: 16px;
+  padding-left: 25px;
+  padding-right: 25px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+.btn3 {
+  background-color: #228b22;
+  border-radius: 16px;
+  padding-left: 25px;
+  padding-right: 25px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+@media (max-width: 450px) {
+  .btn1,
+  .btn2,
+  .btn3 {
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+  }
+}
+
+.filter {
+  color: black;
+  font-size: large;
+  font-weight: 20px;
+
+  border-radius: 16px;
+  padding-left: 24px;
+  padding-right: 45px;
+  padding-top: 5px;
+  padding-bottom: 4px;
+}
+
+.relative {
+  position: relative;
+}
+
+.underscore {
+  display: block;
+
+  height: 4px;
+  width: 100%;
+  position: absolute;
+  bottom: 4px;
+
+  left: 0;
+  background-color: #ffa901;
+}
+
+.underscore::before,
+.underscore::after {
+  content: "";
+  display: block;
+  width: 35%;
+  height: 100%;
+  position: absolute;
+  background-color: rgb(231, 226, 226);
+}
+
+.underscore::before {
+  left: 0;
+}
+
+.underscore::after {
+  right: 0;
+}
+
+.p-confirm-dialog-reject,
+.p-confirm-dialog-accept {
+  margin-right: 10px;
+  padding: 4px;
+}
+
+
+
