@@ -107,7 +107,7 @@ export default function Offer() {
     try {
       setLoading(true);
       const response = await axios.get(
-        `https://digitalmenu-ax0i.onrender.com/api/v1/food?restaurantId=${restaurantId}`
+        `http://localhost:5005/api/v1/food?restaurantId=${restaurantId}`
       );
 
       const allFood = response.data.filter((item) => item.categoryId !== null);
@@ -147,7 +147,7 @@ export default function Offer() {
   const fetchData = async () => {
     try {
       const response = await axios.get(
-        `https://digitalmenu-ax0i.onrender.com/api/v1/offer?restaurantId=${restaurantId}`
+        `http://localhost:5005/api/v1/offer?restaurantId=${restaurantId}`
       );
       setOffers(response.data);
       setTotalOffers(response.data.length);
@@ -197,7 +197,7 @@ export default function Offer() {
       console.log(formData);
 
       const response = await axios.post(
-        "https://digitalmenu-ax0i.onrender.com/api/v1/offer",
+        "http://localhost:5005/api/v1/offer",
         formData,
         {
           headers: {
@@ -247,7 +247,7 @@ export default function Offer() {
     if (window.confirm("Are you sure you want to delete this offer?")) {
       try {
         const response = await axios.delete(
-          `https://digitalmenu-ax0i.onrender.com/api/v1/offer/${id}`,
+          `http://localhost:5005/api/v1/offer/${id}`,
           {
             headers: {
               "Content-Type": "multipart/form-data",
@@ -268,7 +268,7 @@ export default function Offer() {
       console.log(checker);
       const test = !checker;
       const response = await axios.patch(
-        `https://digitalmenu-ax0i.onrender.com/api/v1/offer/${Id}`,
+        `http://localhost:5005/api/v1/offer/${Id}`,
         { isPopular: test },
         {
           headers: {
@@ -340,7 +340,7 @@ export default function Offer() {
                             &#9733;
                           </button>
                           <img
-                            src={`https://digitalmenu-ax0i.onrender.com/api/v1/${offer?.offer_image}`}
+                            src={`http://localhost:5005/api/v1/${offer?.offer_image}`}
                             alt="offer"
                             className="w-10 h-10 lg:w-16 lg:h-16 object-cover rounded-full"
                           />

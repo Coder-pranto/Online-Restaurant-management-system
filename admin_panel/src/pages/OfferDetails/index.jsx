@@ -65,7 +65,7 @@ export default function OfferDetails() {
   const fetchData = async () => {
     try {
       const response = await axios.get(
-        `https://digitalmenu-ax0i.onrender.com/api/v1/offer?restaurantId=${restaurantId}`
+        `http://localhost:5005/api/v1/offer?restaurantId=${restaurantId}`
       );
       const arr = response.data.filter((d) => d._id === id);
       setOffer(arr[0]);
@@ -133,7 +133,7 @@ export default function OfferDetails() {
         <div className="w-[23%]">
           <div className="lg:w-[190px] w-[120px] bg-white shadow-lg rounded-lg">
             <img
-              src={`https://digitalmenu-ax0i.onrender.com/api/v1/${offer?.offer_image}`}
+              src={`http://localhost:5005/api/v1/${offer?.offer_image}`}
               alt=""
               className="p-4 rounded-lg"
             />

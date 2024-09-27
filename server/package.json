@@ -30,6 +30,7 @@
     "node-nmap": "^4.0.0",
     "nodemon": "^2.0.22",
     "qrcode": "^1.5.3",
+    "sharp": "^0.33.5",
     "socket.io": "^4.7.3",
     "validator": "^13.11.0"
   }

@@ -35,10 +35,10 @@
 //     try {
 //       setLoading(true);
 //       const response = await axios.get(
-//         `https://digitalmenu-ax0i.onrender.com/api/v1/category?restaurantId=${restaurantId}`
+//         `http://localhost:5005/api/v1/category?restaurantId=${restaurantId}`
 //       );
 //       const response2 = await axios.get(
-//         `https://digitalmenu-ax0i.onrender.com/api/v1/food?restaurantId=${restaurantId}`
+//         `http://localhost:5005/api/v1/food?restaurantId=${restaurantId}`
 //       );
 //       setMenus(response.data);
 //       setTotalItems(response2.data.filter((x) => x.categoryId !== null).length);
@@ -117,7 +117,7 @@
 
 //       // Send POST request to create a new category
 //       await axios.post(
-//         "https://digitalmenu-ax0i.onrender.com/api/v1/category",
+//         "http://localhost:5005/api/v1/category",
 //         formData,
 //         {
 //           headers: {
@@ -158,7 +158,7 @@
 //     try {
 //       const menuId = data._id;
 //       await axios.delete(
-//         `https://digitalmenu-ax0i.onrender.com/api/v1/category/${menuId}`,
+//         `http://localhost:5005/api/v1/category/${menuId}`,
 //         {
 //           headers: {
 //             Authorization: `${authToken}`,
@@ -193,7 +193,7 @@
 //       // console.log(formData);
 
 //       await axios.patch(
-//         `https://digitalmenu-ax0i.onrender.com/api/v1/category/${updatedMenu._id}`,
+//         `http://localhost:5005/api/v1/category/${updatedMenu._id}`,
 //         formData,
 //         {
 //           headers: {
@@ -267,7 +267,7 @@
 //                   )}
 
 //                   <img
-//                     src={`https://digitalmenu-ax0i.onrender.com/api/v1/${menu.category_image}`}
+//                     src={`http://localhost:5005/api/v1/${menu.category_image}`}
 //                     className="w-full h-[75%] object-cover rounded-t-lg"
 //                     onClick={() => navigate(`/menu-details/${menu._id}`, { state: { categoryImage: menu.category_image } })}
 //                   />
@@ -419,6 +419,8 @@ import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import Loader from "../../components/Loader";
 
+
+
 export default function Menu() {
   const [totalItems, setTotalItems] = useState(0);
   const [popularItems, setPopularItems] = useState(0);
@@ -430,16 +432,18 @@ export default function Menu() {
   const restaurantId = Cookies.get("restaurantId");
   const authToken = Cookies.get("token");
 
+
+
   const navigate = useNavigate();
 
   const fetchData = async () => {
     try {
       setLoading(true);
       const response = await axios.get(
-        `https://digitalmenu-ax0i.onrender.com/api/v1/category?restaurantId=${restaurantId}`
+        `http://localhost:5005/api/v1/category?restaurantId=${restaurantId}`
       );
       const response2 = await axios.get(
-        `https://digitalmenu-ax0i.onrender.com/api/v1/food?restaurantId=${restaurantId}`
+        `http://localhost:5005/api/v1/food?restaurantId=${restaurantId}`
       );
       setMenus(response.data);
       setTotalItems(response2.data.filter((x) => x.categoryId !== null).length);
@@ -456,15 +460,15 @@ export default function Menu() {
     fetchData();
   }, []);
 
-  // yup schema for validate new menu form
   const formInputSchema = yup.object().shape({
     name: yup.string().required("Menu Name is required"),
     image: yup
       .mixed()
       .test("imageRequired", "Menu image is required", (value) => {
         return value && value.length > 0;
-      }),
+      })
   });
+
 
   const cardInfo = [
     {
@@ -516,7 +520,7 @@ export default function Menu() {
 
       // Send POST request to create a new category
       await axios.post(
-        "https://digitalmenu-ax0i.onrender.com/api/v1/category",
+        "http://localhost:5005/api/v1/category",
         formData,
         {
           headers: {
@@ -530,9 +534,10 @@ export default function Menu() {
       reset();
       closeModal();
     } catch (error) {
-      console.error("Error creating Menu:", error);
+      console.error("Error creating Menu:", error.message);
     }
   };
+
 
   const openModal = () => {
     setModalIsOpen(true);
@@ -557,7 +562,7 @@ export default function Menu() {
     try {
       const menuId = data._id;
       await axios.delete(
-        `https://digitalmenu-ax0i.onrender.com/api/v1/category/${menuId}`,
+        `http://localhost:5005/api/v1/category/${menuId}`,
         {
           headers: {
             Authorization: `${authToken}`,
@@ -567,7 +572,7 @@ export default function Menu() {
       setActiveDropdownIndex(null);
       fetchData();
     } catch (error) {
-      console.error("Error deleting Menu:", error);
+      console.error("Error deleting Menu:", error.message);
     }
   };
 
@@ -578,7 +583,7 @@ export default function Menu() {
     setActiveDropdownIndex(null);
     setUpdateModalIsOpen(true);
     setValue("name", menu.name);
-    setUpdateImagePreview(`https://digitalmenu-ax0i.onrender.com/api/v1/${menu.category_image}`);
+    setUpdateImagePreview(`http://localhost:5005/api/v1/${menu.category_image}`);
   };
 
   const closeUpdateModal = () => {
@@ -597,6 +602,7 @@ export default function Menu() {
   };
 
 
+
   const onUpdateSubmit = async (data) => {
     try {
       const formData = new FormData();
@@ -604,7 +610,7 @@ export default function Menu() {
       formData.append("category_image", data.image[0]);
 
       await axios.patch(
-        `https://digitalmenu-ax0i.onrender.com/api/v1/category/${updatedMenu._id}`,
+        `http://localhost:5005/api/v1/category/${updatedMenu._id}`,
         formData,
         {
           headers: {
@@ -650,7 +656,7 @@ export default function Menu() {
               .map((menu, index) => (
                 <div
                   key={index}
-                  className="w-full lg:w-[220px] bg-white shadow-lg rounded-lg cursor-pointer relative"
+                  className="w-full lg:w-[220px] h-[300px] bg-white shadow-lg rounded-lg cursor-pointer relative flex flex-col gap-y-4"
                 >
                   <div
                     className="absolute top-0 right-0 m-2 cursor-pointer"
@@ -678,18 +684,23 @@ export default function Menu() {
                   )}
 
                   <img
-                    src={`https://digitalmenu-ax0i.onrender.com/api/v1/${menu.category_image}`}
-                    className="w-full h-[75%] object-cover rounded-t-lg"
-                    onClick={() => navigate(`/menu-details/${menu._id}`, { state: { categoryImage: menu.category_image } })}
+                    src={`http://localhost:5005/api/v1/${menu.category_image}`}
+                    className="w-full h-[200px] object-cover rounded-t-lg"
+                    onClick={() =>
+                      navigate(`/menu-details/${menu._id}`, {
+                        state: { categoryImage: menu.category_image },
+                      })
+                    }
                   />
 
-                  <h2 className="text-center font-bold text-md lg:text-2xl mt-3">
+                  <h2 className="text-center font-bold text-md lg:text-2xl mt-4 flex-grow">
                     {menu.name}
                   </h2>
                 </div>
               ))
           )}
         </div>
+
       </div>
 
       {/* Modal for new menu */}
@@ -720,6 +731,7 @@ export default function Menu() {
                       label="Image"
                       name="image"
                       register={register}
+                      onChange={handleImageChange}
                       error={errors.image}
                     />
                   </div>

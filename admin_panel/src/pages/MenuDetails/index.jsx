@@ -48,6 +48,7 @@ export default function MenuDetails() {
   const location = useLocation();
   const categoryImage = location.state ? location.state.categoryImage : null;
 
+
   // yup schema for validate new menu form
   const formInputSchema = yup.object().shape({
     name: yup.string().required("Menu Name is required"),
@@ -56,16 +57,15 @@ export default function MenuDetails() {
     description: yup.string().required("Description is required"),
     image: yup
       .mixed()
-    // .test("imageRequired", "Menu image is required", (value) => {
-    //   return value && value.length > 0;
-    // }),
-
+      .test("imageRequired", "Menu image is required", (value) => {
+        return value && value.length > 0;
+      })
   });
 
   const fetchData = async () => {
     try {
       const response = await axios.get(
-        `https://digitalmenu-ax0i.onrender.com/api/v1/food/category/${id}`,
+        `http://localhost:5005/api/v1/food/category/${id}`,
         {
           headers: {
             Authorization: `${authToken}`,
@@ -77,14 +77,14 @@ export default function MenuDetails() {
       setCount(response.data.length);
       setItems(response.data);
     } catch (error) {
-      console.error("Error fetching food data:", error);
+      console.error("Error fetching food data:", error.message);
     }
   };
 
   const fetchRestaurentData = async () => {
     try {
       const response2 = await axios.get(
-        `https://digitalmenu-ax0i.onrender.com/api/v1/food?restaurantId=${restaurantId}`
+        `http://localhost:5005/api/v1/food?restaurantId=${restaurantId}`
       );
       setTotalItems(response2.data.filter((x) => x.categoryId !== null).length);
       setPopularItems(
@@ -174,7 +174,7 @@ export default function MenuDetails() {
       console.log("Request data:", formData);
 
       const response = await axios.post(
-        "https://digitalmenu-ax0i.onrender.com/api/v1/food",
+        "http://localhost:5005/api/v1/food",
         formData,
         {
           headers: {
@@ -227,18 +227,18 @@ export default function MenuDetails() {
     if (window.confirm("Are you sure you want to delete this item?")) {
       try {
         const response = await axios.delete(
-          `https://digitalmenu-ax0i.onrender.com/api/v1/food/${foodId}`,
+          `http://localhost:5005/api/v1/food/${foodId}`,
           {
             headers: {
               Authorization: `${authToken}`,
             },
           }
         );
-        alert("Deleted successfully:");
         console.log(response.data);
+        alert("Deleted successfully:");
         fetchData();
       } catch (error) {
-        console.error("Error deleting food item:", error);
+        console.error("Error deleting food item:", error.message);
       }
     }
   };
@@ -287,7 +287,7 @@ export default function MenuDetails() {
       console.log(formData, itemId);
 
       const response = await axios.patch(
-        `https://digitalmenu-ax0i.onrender.com/api/v1/food/${itemId}`, // Endpoint for updating item
+        `http://localhost:5005/api/v1/food/${itemId}`, // Endpoint for updating item
         formData,
         {
           headers: {
@@ -312,7 +312,7 @@ export default function MenuDetails() {
       console.log(checker);
       const test = !checker;
       const response = await axios.patch(
-        `https://digitalmenu-ax0i.onrender.com/api/v1/food/${Id}`,
+        `http://localhost:5005/api/v1/food/${Id}`,
         { isPopular: test },
         {
           headers: {
@@ -378,7 +378,7 @@ export default function MenuDetails() {
         <div className="w-full lg:w-[23%]">
           <div className="w-full lg:w-[190px] md:w-[150px] bg-white shadow-lg rounded-lg flex flex-col items-center justify-center">
             <img
-              src={`https://digitalmenu-ax0i.onrender.com/api/v1/${categoryImage}`}
+              src={`http://localhost:5005/api/v1/${categoryImage}`}
               className="lg:p-4 lg:w-full"
             />
             <h2 className="text-center font-bold text-lg lg:text-2xl pb-4">
@@ -421,7 +421,7 @@ export default function MenuDetails() {
                           &#9733;
                         </button>
                         <img
-                          src={`https://digitalmenu-ax0i.onrender.com/api/v1/${item.food_image}`}
+                          src={`http://localhost:5005/api/v1/${item.food_image}`}
                           alt=""
                           className="w-full rounded-lg"
                         />
@@ -513,7 +513,7 @@ export default function MenuDetails() {
                                   <div className="mt-2 flex justify-center">
                                     {selectedImage ? (
                                       <img
-                                        // src={`https://digitalmenu-ax0i.onrender.com/api/v1/${selectedImage}`}
+                                        // src={`http://localhost:5005/api/v1/${selectedImage}`}
                                         src={selectedImage}
                                         alt="Selected_item"
                                         className="w-32 h-20 object-cover rounded-md"
@@ -521,7 +521,7 @@ export default function MenuDetails() {
                                     ) : (
                                       item?.food_image && (
                                         <img
-                                          src={`https://digitalmenu-ax0i.onrender.com/api/v1/${item?.food_image}`}
+                                          src={`http://localhost:5005/api/v1/${item?.food_image}`}
                                           alt="Food_image"
                                           className="w-32 h-20 object-cover rounded-md"
                                         />
@@ -899,7 +899,7 @@ export default function MenuDetails() {
               <div className="p-2 lg:p-3 flex flex-col lg:flex-row gap-4 mt-5 lg:ml-5 xs:ml-0">
                 <div className="w-full lg:w-[15%] flex justify-center lg:block">
                   <img
-                    src={`https://digitalmenu-ax0i.onrender.com/api/v1/${singleMenuDetails?.food_image}`}
+                    src={`http://localhost:5005/api/v1/${singleMenuDetails?.food_image}`}
                     className="rounded-xl"
                   />
                 </div>

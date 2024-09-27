@@ -1,8 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Outlet, useNavigate } from "react-router-dom";
 import SideBar from "../../components/Sidebar";
-
-import { useEffect, useState } from "react";
+import { OrderContext } from "../../context/OrderHistoryContext"
+import { useContext, useEffect, useState } from "react";
 // for client part
 import socketIOClient from "socket.io-client";
 import toast from "react-hot-toast";
@@ -10,6 +10,7 @@ import Cookies from "js-cookie";
 
 export default function InitialLayout() {
   const [currentRestaurent] = useState(Cookies.get("restaurantId"));
+  const { triggerRefresh } = useContext(OrderContext);
   const navigate = useNavigate();
 
   // Preload notification sound
@@ -17,10 +18,15 @@ export default function InitialLayout() {
   notificationSound.load();
 
   useEffect(() => {
-    const socket = socketIOClient("https://digitalmenu-ax0i.onrender.com/");
+    const socket = socketIOClient("http://localhost:5005", {
+      transports: ['websocket', 'polling'],
+      withCredentials: true
+    });
+
     socket.on("newOrder", (data) => {
       if (data.restaurantId === currentRestaurent) {
         playNotificationSound(notificationSound);
+        triggerRefresh();
 
         toast.custom(
           (t) => (
@@ -41,7 +47,7 @@ export default function InitialLayout() {
                 </button>
                 <button
                   className="bg-gray-400 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                  onClick={() => toast.dismiss(t.id)}
+                  onClick={() => { toast.dismiss(t.id) }}
                 >
                   Cancel
                 </button>

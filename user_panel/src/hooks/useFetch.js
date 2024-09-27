@@ -1,5 +1,5 @@
-import axios from "axios";
-import { useEffect, useState } from "react";
+import axios from 'axios';
+import { useEffect, useState } from 'react';
 
 export default function useFetch(url) {
   // console.log({url})
@@ -7,7 +7,8 @@ export default function useFetch(url) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
 
-  const baseURL = "https://api.efood.tailormaster.xyz/api/v1/";
+  // const baseURL = 'https://digitalmenu-ax0i.onrender.com/api/v1/';
+  const baseURL = 'https://server.digitalmenu.tecklyne.com/api/v1/';
   // const baseURL = 'http://localhost:5005/api/v1/';
   // console.log(baseURL + url);
 

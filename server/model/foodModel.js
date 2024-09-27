@@ -9,6 +9,9 @@ const foodSchema = new mongoose.Schema(
     food_image: {
       type: String,
     },
+    // food_video: {
+    //   type: String,
+    // },
     categoryId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Category",

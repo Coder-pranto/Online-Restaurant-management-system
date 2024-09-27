@@ -17,7 +17,7 @@ const ManageAdmin = () => {
 
   const fetchRestaurantData = async (retryCount = 0) => {
     try {
-      if (!token && retryCount < 5) {
+      if (!token && retryCount < 2) {
         setTimeout(() => fetchRestaurantData(retryCount + 1), 500);
         return;
       }
@@ -39,8 +39,10 @@ const ManageAdmin = () => {
     }
   };
 
+
   useEffect(() => {
     fetchRestaurantData();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
 
   const openModal = () => {
@@ -87,7 +89,9 @@ const ManageAdmin = () => {
       longitude: Number(formData.longitude),
     };
     const {
+      // eslint-disable-next-line no-unused-vars
       latitude,
+      // eslint-disable-next-line no-unused-vars
       longitude,
       restaurantRadius,
       logo,

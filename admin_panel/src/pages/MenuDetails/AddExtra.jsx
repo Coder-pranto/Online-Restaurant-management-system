@@ -12,7 +12,7 @@ import axios from "axios";
 import editIcon from "../../assets/menu/menu-details/edit.png";
 import deleteIcon from "../../assets/menu/menu-details/delete.png";
 
-// addExtraFrom Schema for validation
+
 const addExtraFormSchema = yup.object().shape({
   name: yup.string().required("Menu Name is required"),
   price: yup.string().required("Price is required"),
@@ -20,8 +20,10 @@ const addExtraFormSchema = yup.object().shape({
     .mixed()
     .test("imageRequired", "Image is required", (value) => {
       return value && value.length > 0;
-    }),
+    })
+
 });
+
 
 export default function AddExtra({
   isOpen,
@@ -39,7 +41,7 @@ export default function AddExtra({
   // fetching add-ons data
   const fetchData = async () => {
     const response = await axios.get(
-      `https://digitalmenu-ax0i.onrender.com/api/v1/addons/${categoryId}`
+      `http://localhost:5005/api/v1/addons/${categoryId}`
     );
     setAddOns(response.data);
   };
@@ -95,7 +97,7 @@ export default function AddExtra({
       formData.append("category", categoryId);
 
       await axios.post(
-        "https://digitalmenu-ax0i.onrender.com/api/v1/addons",
+        "http://localhost:5005/api/v1/addons",
         formData,
         {
           headers: {
@@ -123,8 +125,8 @@ export default function AddExtra({
       formData.append("restaurantId", restaurantId);
       formData.append("category", categoryId);
 
-      const response = await axios.patch(
-        `https://digitalmenu-ax0i.onrender.com/api/v1/addons/${singleAddOn?._id}`,
+        await axios.patch(
+        `http://localhost:5005/api/v1/addons/${singleAddOn?._id}`,
         formData,
         {
           headers: {
@@ -148,7 +150,7 @@ export default function AddExtra({
     if (window.confirm("Are you sure you want to delete this item?")) {
       try {
         const response = await axios.delete(
-          `https://digitalmenu-ax0i.onrender.com/api/v1/addons/${id}`,
+          `http://localhost:5005/api/v1/addons/${id}`,
           {
             headers: {
               Authorization: `${authToken}`,
@@ -189,7 +191,7 @@ export default function AddExtra({
             >
               <td>
                 <img
-                  src={`https://digitalmenu-ax0i.onrender.com/api/v1/${item?.addonsImage}`}
+                  src={`http://localhost:5005/api/v1/${item?.addonsImage}`}
                   alt={item?.name}
                   //   loading="lazy"
                   className="w-[40px] h-[40px] rounded-xl object-cover"
@@ -231,7 +233,7 @@ export default function AddExtra({
             <div className="text-xs lg:text-base">
               <div className="bg-[#ffa901]">
                 <h2 className="text-center text-white text-lg lg:text-2xl py-2 lg:py-4 font-bold">
-                  Add Food Extra's
+                  Add Food Extra&apos;s
                 </h2>
               </div>
               <div>
@@ -300,7 +302,7 @@ export default function AddExtra({
             <div className="text-xs lg:text-base">
               <div className="bg-[#ffa901]">
                 <h2 className="text-center text-white text-lg lg:text-2xl py-2 lg:py-4 font-bold">
-                  Edit Food Extra's
+                  Edit Food Extra&apos;s
                 </h2>
               </div>
               <div>

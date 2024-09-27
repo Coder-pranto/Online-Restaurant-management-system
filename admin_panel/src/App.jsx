@@ -1,11 +1,16 @@
 import { RouterProvider } from "react-router-dom";
 import routers from "./router/router";
 import { Toaster } from "react-hot-toast";
+import { OrderProvider } from "./context/OrderHistoryContext";
+
 function App() {
   return (
     <div>
-      <RouterProvider router={routers} />
-      <Toaster />
+      <OrderProvider>
+        <RouterProvider router={routers} />
+        <Toaster />
+      </OrderProvider>
+
     </div>
   );
 }

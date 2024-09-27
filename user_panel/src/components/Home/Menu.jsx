@@ -1,7 +1,10 @@
 import Loading from "../../ui/Loading/Loading";
 import AllMenu from "../../assets/all_menu.png";
 
+
 export default function Menu({ data, loading, baseURL, setSelectedMenu }) {
+
+
   return (
     <section className="flex items-center gap-5 overflow-x-auto pb-2 h-full">
       {loading ? (
@@ -17,7 +20,9 @@ export default function Menu({ data, loading, baseURL, setSelectedMenu }) {
               alt="item"
               className="w-full h-20 rounded-md object-cover"
             />
-            <span className="text-sm font-semibold text-center">All Menu</span>
+            <span className="text-sm font-semibold text-center">
+            All Menu
+            </span>
           </div>
           {data.map((menu) => (
             <div
@@ -30,7 +35,9 @@ export default function Menu({ data, loading, baseURL, setSelectedMenu }) {
                 alt={menu.name}
                 className="w-full h-20 rounded-md object-cover"
               />
-              <span className="text-sm font-semibold text-center">{menu.name}</span>
+              <span className="text-sm font-semibold text-center">
+                {menu.name}
+              </span>
             </div>
           ))}
         </>

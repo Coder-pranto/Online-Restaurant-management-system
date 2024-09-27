@@ -84,7 +84,7 @@ export default function Employee() {
   const fetchEmployeesData = async () => {
     setLoading(true);
     const response = await axios.get(
-      `https://digitalmenu-ax0i.onrender.com/api/v1/employee?restaurantId=${restaurantId}`,
+      `http://localhost:5005/api/v1/employee?restaurantId=${restaurantId}`,
       {
         headers: {
           Authorization: `${authToken}`,
@@ -116,7 +116,7 @@ export default function Employee() {
 
       console.log(formData);
       const response = await axios.post(
-        "https://digitalmenu-ax0i.onrender.com/api/v1/employee",
+        "http://localhost:5005/api/v1/employee",
         formData,
         {
           headers: {
@@ -150,7 +150,7 @@ export default function Employee() {
 
       console.log(formData);
       const response = await axios.patch(
-        `https://digitalmenu-ax0i.onrender.com/api/v1/employee/${data.id}`,
+        `http://localhost:5005/api/v1/employee/${data.id}`,
         formData,
         {
           headers: {
@@ -173,7 +173,7 @@ export default function Employee() {
       // /employee/65a4365368955007495f0c40
       try {
         const response = await axios.delete(
-          `https://digitalmenu-ax0i.onrender.com/api/v1/employee/${id}`,
+          `http://localhost:5005/api/v1/employee/${id}`,
 
           {
             headers: {
@@ -324,7 +324,7 @@ const handleSearchChange = (e) => {
                     <td className="py-3 px-4">
                       <div className="flex items-center gap-3">
                         <img
-                          src={`https://digitalmenu-ax0i.onrender.com/api/v1/${employee?.employeeImage}`}
+                          src={`http://localhost:5005/api/v1/${employee?.employeeImage}`}
                           className="w-[40px] h-[40px] rounded-full object-cover"
                         />
                         <span>{employee.name}</span>

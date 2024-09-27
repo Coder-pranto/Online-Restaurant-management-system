@@ -57,7 +57,7 @@ export default function EditOffer({
       formData.set("food_ids", JSON.stringify(foodIds));
 
       const response = await axios.patch(
-        `https://digitalmenu-ax0i.onrender.com/api/v1/offer/${offer?._id}`,
+        `http://localhost:5005/api/v1/offer/${offer?._id}`,
         formData,
         {
           headers: {

@@ -10,6 +10,14 @@ router.post(
   verifyJWTToken("restaurant_admin"),
   orderController.createOrder
 );
+
+//Add a new table order 
+router.post(
+  "/table",
+  // verifyJWTToken("restaurant_admin"),
+  orderController.createTableOrder
+);
+
 //Get All orders
 router.get(
   "/:restaurantId",

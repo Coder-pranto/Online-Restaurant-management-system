@@ -20,12 +20,25 @@ export default function MenuDetails({
     baseURL: selectedMenuURL,
   } = useFetch(`food/category/${menuId}`);
 
+  const {
+    data: allCate,
+  } = useFetch(`category?restaurantId=${restaurantId}`);
+
   /* <- Fetching all foods based on restaurantId -> */
   const {
-    data: allMenuData,
+    data: allMenuDatax,
     loading: allMenuLoading,
     baseURL: allMenuURL,
   } = useFetch(`food?restaurantId=${restaurantId}`);
+
+  const allMenuData = allMenuDatax.filter(item => {
+    if (item.categoryId && item.categoryId._id) {
+      return allCate.some(category => category._id === item.categoryId._id);
+    }
+    return false; // Exclude items with null categoryId
+  });
+  
+  console.log(allMenuData)
 
   return (
     <section>
@@ -54,7 +67,7 @@ export default function MenuDetails({
                     menuName={menuItem?.name}
                     menuDetails={menuItem?.description}
                     menuPrice={menuItem.price}
-                    menuImage={allMenuURL + menuItem.food_image}
+                    menuImage={ allMenuURL + menuItem.food_image}
                     menuOfferAvailable={menuItem?.isOffer}
                     menuDiscountType={menuItem?.discount_type}
                     menuDiscountValue={menuItem?.discount_value}
@@ -94,7 +107,7 @@ export default function MenuDetails({
                   menuName={menuItem?.name}
                   menuDetails={menuItem?.description}
                   menuPrice={menuItem.price}
-                  menuImage={allMenuURL + menuItem.food_image}
+                  menuImage={ allMenuURL + menuItem.food_image}
                   menuOfferAvailable={menuItem?.isOffer}
                   menuDiscountType={menuItem?.discount_type}
                   menuDiscountValue={menuItem?.discount_value}

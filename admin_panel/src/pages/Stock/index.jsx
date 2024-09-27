@@ -1,7 +1,6 @@
 import Header from "../../components/Header";
 import totalItemsImg from "../../assets/cardImage/total-items.png";
 import React, { useState, useEffect } from "react";
-
 import DashboardCard from "../../components/cards/DashboardCard";
 import editImg from "../../assets/action-button/edit.png";
 import { PiArrowElbowRightDownFill } from "react-icons/pi";
@@ -32,7 +31,7 @@ export default function Stock() {
   const fetchStocks = async () => {
     setLoading(true);
     const response = await axios.get(
-      `https://digitalmenu-ax0i.onrender.com/api/v1/stock_limit?restaurantId=${restaurantId}`
+      `http://localhost:5005/api/v1/stock_limit?restaurantId=${restaurantId}`
     );
     // console.log(response.data)
     setStocks(response.data);
@@ -41,7 +40,7 @@ export default function Stock() {
 
   const fetchCategories = async () => {
     const response = await axios.get(
-      `https://digitalmenu-ax0i.onrender.com/api/v1/category?restaurantId=${restaurantId}`
+      `http://localhost:5005/api/v1/category?restaurantId=${restaurantId}`
     );
     const selectedProprties = response.data.map(({ _id, name }) => ({
       _id,
@@ -89,7 +88,7 @@ export default function Stock() {
         try {
           setLoading(true);
           const response = await axios.get(
-            `https://digitalmenu-ax0i.onrender.com/api/v1/food/category/${selectedCategoryId}`
+            `http://localhost:5005/api/v1/food/category/${selectedCategoryId}`
           );
 
           const foodItemsWithQuantity = response.data.map((food) => ({
@@ -116,14 +115,24 @@ export default function Stock() {
   };
 
   const handleAddFoodItem = (foodId, quantity) => {
-    const updatedFoodItems = foodItems.map((food) => {
-      if (food._id === foodId) {
-        return { ...food, quantity: parseInt(quantity) }; // Update quantity
-      }
-      return food;
-    });
-    setFoodItems(updatedFoodItems);
+    // Find the food item in the list
+    const existingFoodItem = foodItems.find((food) => food._id === foodId);
+
+    if (existingFoodItem) {
+      // If the item exists, update its quantity there quality of food and many other sthings
+      setFoodItems((prevFoodItems) =>
+        prevFoodItems.map((food) =>
+          food._id === foodId ? { ...food, quantity: parseInt(quantity) } : food
+        )
+      );
+    } else {
+      // If it doesn't exist, add the new item with the quantity
+      const newFoodItem = foodItems.find((food) => food._id === foodId);
+      setFoodItems([...foodItems, { ...newFoodItem, quantity: parseInt(quantity) }]);
+    }
   };
+
+
 
   // Inside the handleRemoveFoodItem function
   const handleRemoveFoodItem = (foodId) => {
@@ -141,6 +150,16 @@ export default function Stock() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Check if the selected category is already in stock
+    const isCategoryInStock = stocks.some((stock) => stock.category._id === selectedCategoryId);
+
+    if (isCategoryInStock) {
+      // Display an error message if the category is already in stock
+      toast.error("This category is already in stock. Please update the existing stock or remove it first.");
+      return; // Prevent form submission
+    }
+
+    // Proceed with form submission if category is not in stock
     const formData = {
       category: selectedCategoryId,
       foodItems: foodItems.map((food) => ({
@@ -149,13 +168,11 @@ export default function Stock() {
       })),
     };
 
-    // console.log(formData);
-
     try {
       setLoading(true);
 
-      const response = await axios.post(
-        "https://digitalmenu-ax0i.onrender.com/api/v1/stock_limit",
+      await axios.post(
+        "http://localhost:5005/api/v1/stock_limit",
         {
           ...formData,
           restaurantId: restaurantId,
@@ -163,11 +180,11 @@ export default function Stock() {
         {
           headers: {
             Authorization: token,
-          },
+          }
         }
       );
 
-      // If the request is successful, fetch stocks again to update the UI
+      // Fetch stocks again after successful form submission
       fetchStocks();
 
       // Reset form fields
@@ -177,36 +194,33 @@ export default function Stock() {
       // Close the modal
       closeModal();
 
-      // Optionally, you can display a success message or perform other actions
-      console.log("Form submitted successfully", response.data);
+      toast.success("Stock added successfully!");
     } catch (error) {
-      // If there's an error, handle it appropriately
       console.error("Error submitting form:", error.message);
+      toast.error("Failed to add stock.");
     } finally {
-      setLoading(false); // Set loading state to false after form submission is complete
+      setLoading(false);
     }
   };
 
 
-
   const showLowQuantityWarning = () => {
-    if (!stocks || stocks.length === 0) return;
+    if (!stocks || stocks?.length === 0) return;
 
-    const lowQuantityItems = stocks.reduce((acc, stock) => {
-      stock.foodItems.forEach((foodItem) => {
-        if (foodItem.quantity <= 3 && stock.category) {
+    const lowQuantityItems = stocks?.reduce((acc, stock) => {
+      stock?.foodItems?.forEach((foodItem) => {
+        if (foodItem?.quantity <= 3 && foodItem?.food && stock?.category) {  // Add foodItem?.food check
           acc.push({
-            category: stock.category.name,
-            foodName: foodItem.food.name,
-            quantity: foodItem.quantity,
+            category: stock?.category.name,
+            foodName: foodItem?.food?.name,  // Ensure foodItem.food exists
+            quantity: foodItem?.quantity,
           });
         }
       });
       return acc;
     }, []);
 
-
-    if (lowQuantityItems.length > 0) {
+    if (lowQuantityItems?.length > 0) {
       const message = (
         <div className="bg-white p-4 rounded-lg shadow-lg max-w-full sm:max-w-lg ">
           <p className="font-bold mb-2">Low quantity items:</p>
@@ -220,7 +234,7 @@ export default function Stock() {
                 </tr>
               </thead>
               <tbody>
-                {lowQuantityItems.map((item, idx) => (
+                {lowQuantityItems?.map((item, idx) => (
                   <tr key={idx}>
                     <td className="border border-gray-200 px-4 py-2 bg-blue-50">
                       {item.foodName}
@@ -271,7 +285,7 @@ export default function Stock() {
 
     try {
       const response = await axios.patch(
-        `https://digitalmenu-ax0i.onrender.com/api/v1/stock_limit/${singleStock._id}`,
+        `http://localhost:5005/api/v1/stock_limit/${singleStock._id}`,
         updatedStockData,
         {
           headers: {
@@ -306,7 +320,7 @@ export default function Stock() {
     if (window.confirm("Are you sure you want to delete this item?")) {
       try {
         const response = await axios.delete(
-          `https://digitalmenu-ax0i.onrender.com/api/v1/stock_limit/${id}`,
+          `http://localhost:5005/api/v1/stock_limit/${id}`,
           {
             headers: {
               Authorization: token,
@@ -435,91 +449,6 @@ export default function Stock() {
         </div>
       </div>
 
-      {/* <div className="lg:ml-6 mt-7 mr-7 rounded-lg overflow-x-auto text-xs lg:text-base">
-  <div className="lg:w-[95%] w-full bg-white rounded-lg shadow-lg overflow-hidden">
-    <table className="w-full text-left">
-      <thead className="bg-[#FBA919] text-white">
-        <tr>
-          <th className="px-4 py-2">Category Name</th>
-          <th className="px-4 py-2 hidden sm:table-cell">Items</th>
-          <th className="px-4 py-2 hidden sm:table-cell">Left Over</th>
-          <th className="px-4 py-2 text-center">Action</th>
-        </tr>
-      </thead>
-      <tbody>
-        {loading ? (
-          <Loader />
-        ) : (
-          stocks
-            ?.slice()
-            .reverse()
-            .map((stock) => (
-              <React.Fragment key={stock._id}>
-                <tr
-                  className="text-sm cursor-pointer h-[80px] hover:bg-blue-100 bg-blue-50 odd:bg-white"
-                  onClick={() => handleCategoryChangeACC(stock._id)}
-                >
-                  <td className="px-4 py-2">
-                    <div className="flex items-end">
-                      <span>{stock?.category?.name}</span>
-                      <PiArrowElbowRightDownFill size={"10px"} />
-                    </div>
-                  </td>
-                  <td className="px-4 py-2 hidden sm:table-cell">{stock?.foodItems?.length}</td>
-                  <td className="px-4 py-2 hidden sm:table-cell">
-                    {stock.foodItems.reduce(
-                      (total, foodItem) => total + foodItem.quantity,
-                      0
-                    )}
-                  </td>
-                  <td className="px-4 py-2 text-center">
-                    <div className="flex justify-center">
-                      <img
-                        src={deleteImg}
-                        alt="delete"
-                        className="cursor-pointer"
-                        onClick={() => handleDelete(stock?._id)}
-                      />
-                    </div>
-                  </td>
-                </tr>
-                {expandedCategory === stock._id && (
-                  <tr>
-                    <td colSpan="4">
-                      <div className="overflow-x-auto">
-                        <table className="w-full sm:w-[75%] mx-auto">
-                          <thead className="bg-gray-200">
-                            <tr>
-                              <th className="px-4 py-2">Food Item</th>
-                              <th className="px-4 py-2 text-center">Quantity</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {stock.foodItems.map((foodItem) => (
-                              <tr key={foodItem._id}>
-                                <td className="border border-gray-200 px-4 py-2 bg-blue-50">
-                                  {foodItem?.food?.name}
-                                </td>
-                                <td className="border border-gray-200 px-4 py-2 text-center bg-blue-50">
-                                  {foodItem?.quantity}
-                                </td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
-                    </td>
-                  </tr>
-                )}
-              </React.Fragment>
-            ))
-        )}
-      </tbody>
-    </table>
-  </div>
-</div> */}
-
-
       {/* Modal for new stock */}
       {isModalOpen && (
         <DynamicModal
@@ -547,12 +476,23 @@ export default function Stock() {
                       className="border p-2 w-full rounded-lg bg-gray-100"
                     >
                       <option value="">Select category</option>
-                      {categories.map((category) => (
-                        <option key={category._id} value={category._id}>
-                          {category.name}
-                        </option>
-                      ))}
+                      {categories.map((category) => {
+                        const isCategoryInStock = stocks.some((stock) => stock.category._id === category._id);
+
+                        return (
+                          <option
+                            key={category._id}
+                            value={category._id}
+                            disabled={isCategoryInStock}
+                            style={{ color: isCategoryInStock ? 'red' : 'black' }}
+                          >
+                            {category.name} {isCategoryInStock && <span>(Already in stock)</span>}
+                          </option>
+                        );
+                      })}
                     </select>
+
+
                   </div>
 
                   {/* Display food items based on selected category */}
@@ -579,6 +519,7 @@ export default function Stock() {
                       ))}
                     </div>
                   )}
+
                   <div className="flex justify-center">
                     <button
                       type="submit"
@@ -600,3 +541,6 @@ export default function Stock() {
     </div>
   );
 }
+
+
+

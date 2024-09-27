@@ -28,7 +28,7 @@ export default function OrderHistory() {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get(`https://digitalmenu-ax0i.onrender.com/api/v1/order/${restaurantId}`, {
+      const response = await axios.get(`http://localhost:5005/api/v1/order/${restaurantId}`, {
         headers: {
           "Authorization": `${authToken}`,
         }
@@ -50,7 +50,7 @@ export default function OrderHistory() {
 
   const fetchOrders = async () => {
     try {
-      const response = await axios.get(`https://digitalmenu-ax0i.onrender.com/api/v1/order/${restaurantId}`, {
+      const response = await axios.get(`http://localhost:5005/api/v1/order/${restaurantId}`, {
         headers: {
           "Authorization": `${authToken}`,
         }
@@ -193,7 +193,7 @@ export default function OrderHistory() {
               >
                 <div className="w-[75%] flex gap-2 items-center mx-4">
                   <img
-                    src={`https://digitalmenu-ax0i.onrender.com/api/v1/${food.image}`}
+                    src={`http://localhost:5005/api/v1/${food.image}`}
                     alt={"img"}
                     className="w-[50px] rounded "
                   />

@@ -41,14 +41,23 @@ const getAllRestaurantAdminController = async (req, res, next) => {
             next(new CustomError('Couldn\'t found any restaurant admins', 404));
             return;
         }
+
         // Convert each Mongoose document to a plain JavaScript object
         const restaurantAdminsWithoutPass = restaurantAdmins.result.map(admin => {
-            let { password: pwd, ...adminWithoutPass } = admin.toObject();
-            adminWithoutPass = {
-                ...adminWithoutPass,
+            /* if admin don't want to display the password */
+            // let { password: pwd, ...adminWithoutPass } = admin.toObject();
+            // adminWithoutPass = {
+            //     ...adminWithoutPass,
+            //     totalPage: restaurantAdmins.totalPage
+            // };
+            // return adminWithoutPass;
+            /* if admin don't want to display the password */
+            let admins = admin.toObject();
+            admins = {
+                ...admins,
                 totalPage: restaurantAdmins.totalPage
             };
-            return adminWithoutPass;
+            return admins;
         });
         // send success response
         res.status(200).json({
@@ -228,7 +237,6 @@ const updateRestaurantController = async (req, res, next) => {
 }
 
 
-
 // delete a restaurant admin controller by super admin
 const deleteARestaurantAdminController = async (req, res, next) => {
     try {
@@ -267,14 +275,15 @@ const loginController = async (req, res, next) => {
         }
 
         // Compared the provided password with the stored hashed password. If not matched, return an error.
-        const isPasswordMatched = await bcrypt.compare(password, user.password);
-        if (!isPasswordMatched) {
-            return res.status(401).json({status: "failed",message: 'Invalid password.'})
-        }
-
-        // if (password !== user.password) {
+        // const isPasswordMatched = await bcrypt.compare(password, user.password);
+        // if (!isPasswordMatched) {
         //     return res.status(401).json({status: "failed",message: 'Invalid password.'})
         // }
+
+        if (password !== user.password) {
+            console.log(password, user.password);
+            return res.status(401).json({status: "failed",message: 'Invalid password.'})
+        }
 
         // generate jwt token
         const token = generateJwtToken({email, role: 'restaurant_admin'})
@@ -282,6 +291,7 @@ const loginController = async (req, res, next) => {
         const restaurantAdminSendableInfo = {
             restaurantId: user.restaurantId,
             restaurantName: user.restaurantName,
+            restaurantLogo: user.logo,
             token,
         }
         res.status(200).json({status: "success",message: 'Login successfull',data: restaurantAdminSendableInfo})

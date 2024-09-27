@@ -43,16 +43,11 @@ const menuItems = [
         name: "Order History",
         path: "/order-history",
       },
-    ],
-  },
-  {
-    name: "Table order",
-    subMenu: [
       {
         icon: "/menuIcon/table.png",
         name: "Table Order",
         path: "/table-order",
-      },
+      }
     ],
   },
   {

@@ -1,13 +1,11 @@
 const Food = require("../model/foodModel");
 const fs = require("fs");
-// const mongoose = require("mongoose");
+const { compressImage } = require("../utils/imageCompressor");
 
 const foodController = {
   
   updateAllFoodItems: async (req, res) => {
     try {
-      // const categoryId = req.params.id;
-
       // Update all documents in the "Food" collection
       const result = await Food.updateMany(
         {},
@@ -17,30 +15,25 @@ const foodController = {
           },
         }
       );
-      // Log the result of the update operation
       console.log(result);
 
-      // Optionally, you can return a response or perform other actions
       res.json(result);
     } catch (error) {
-      // Handle errors here
       console.error(error);
-      throw error;
+      res.status(500).json({ message: "Internal server error" });
     }
   },
-  //Add A new Food
+
+  // Add a new food
   createFood: async (req, res) => {
     try {
       if (req.file) {
-        const { name, categoryId, price, description, preparationTime, restaurantId } =
-          req.body;
+        // Compress the uploaded image
+        await compressImage(req.file.path);
 
-        let ingredients = req.body?.ingredients
-          ? JSON.parse(req.body?.ingredients)
-          : [];
-        let spicyLevels = req.body?.spicyLevels
-          ? JSON.parse(req.body.spicyLevels)
-          : [];
+        const { name, categoryId, price, description, preparationTime, restaurantId } = req.body;
+        let ingredients = req.body?.ingredients ? JSON.parse(req.body?.ingredients) : [];
+        let spicyLevels = req.body?.spicyLevels ? JSON.parse(req.body.spicyLevels) : [];
         let sizes = req.body.sizes ? JSON.parse(req.body.sizes) : [];
         let pieces = req.body.pieces ? JSON.parse(req.body.pieces) : [];
 
@@ -61,9 +54,10 @@ const foodController = {
           food_image,
           ingredients,
           description,
-          restaurantId
+          restaurantId,
         });
-        console.log('from food controller', food)
+
+        console.log("from food controller", food);
 
         await food.save();
         res.status(201).json(food);
@@ -76,25 +70,21 @@ const foodController = {
     }
   },
 
-  //Get All the Food
+  // Get all the food
   listFood: async (req, res) => {
     try {
-      let query = {restaurantId: req.query.restaurantId};
+      let query = { restaurantId: req.query.restaurantId };
 
       const food = await Food.find(query)
-
         .populate({
           path: "categoryId",
           select: "_id name",
         })
-
         .exec();
 
-      // Check if search term is provided in the query parameters
       if (req.query.searchTerm) {
         const searchRegex = new RegExp(req.query.searchTerm, "i");
 
-        // Filter the results based on the search term
         const filterFood = food.filter(
           (item) =>
             item.name.match(searchRegex) ||
@@ -109,19 +99,16 @@ const foodController = {
     }
   },
 
-  //Get a single food
-
+  // Get a single food item
   getFood: async (req, res) => {
     const foodId = req.params.id;
 
     try {
       const food = await Food.findById(foodId)
-
         .populate({
           path: "categoryId",
           select: "_id name",
         })
-
         .exec();
 
       if (!food) {
@@ -133,19 +120,17 @@ const foodController = {
       res.status(500).json({ message: "Internal server error" });
     }
   },
-  //Get  food by category
 
+  // Get food items by category
   getFoodByCategory: async (req, res) => {
     try {
       const categoryId = req.params.id;
 
-      // Query the database to find food items matching the specified category
-      const foodItems = await Food.find({ categoryId: categoryId })
+      const foodItems = await Food.find({ categoryId })
         .populate({
           path: "categoryId",
           select: "_id name",
         })
-
         .exec();
 
       if (!foodItems || foodItems.length === 0) {
@@ -161,77 +146,65 @@ const foodController = {
     }
   },
 
-  //Update a food
+  // Update a food item
   updateFood: async (req, res) => {
     try {
       const { id } = req.params;
-      const {
-        name,
-        categoryId,
-        isPopular,
-        price,
-        description,
-        preparationTime,
-      } = req.body;
-  
-      let food = await Food.findOne({_id: id});
-  
+      const { name, categoryId, isPopular, price, description, preparationTime } = req.body;
+      let food = await Food.findOne({ _id: id });
+
       if (!food) {
         return res.status(404).json({ message: "Food item not found" });
       }
-  
-      let ingredients = req.body?.ingredients
-        ? JSON.parse(req.body?.ingredients)
-        : [];
-      let spicyLevels = req.body?.spicyLevels
-        ? JSON.parse(req.body?.spicyLevels)
-        : [];
+
+      let ingredients = req.body?.ingredients ? JSON.parse(req.body?.ingredients) : [];
+      let spicyLevels = req.body?.spicyLevels ? JSON.parse(req.body.spicyLevels) : [];
       let sizes = req.body?.sizes ? JSON.parse(req.body?.sizes) : [];
       let pieces = req.body?.pieces ? JSON.parse(req.body?.pieces) : [];
-  
+
       if (ingredients?.length >= 0) {
         food.ingredients = ingredients;
       }
       if (spicyLevels?.length >= 0) {
         food.spicyLevels = spicyLevels;
       }
-  
       if (sizes.length >= 0) {
         food.sizes = sizes;
       }
-  
       if (pieces.length >= 0) {
         food.pieces = pieces;
       }
-  
+
       if (req.file) {
+        // Remove the old image if it exists
         if (food.food_image && fs.existsSync(food.food_image)) {
           fs.unlinkSync(food.food_image);
         }
-  
+
+        // Compress the new image
+        await compressImage(req.file.path);
+
+        // Update the image path
         food.food_image = req.file.path;
       }
-  
+
       food.name = name || food.name;
       food.isPopular = isPopular || food.isPopular;
       food.preparationTime = preparationTime || food.preparationTime;
       food.categoryId = categoryId || food.categoryId;
       food.price = price || food.price;
       food.description = description || food.description;
-  
+
       await food.save();
-  
+
       res.json(food);
     } catch (error) {
       console.error(error);
-      res
-        .status(500)
-        .json({ message: "Internal server error", error: error.message });
+      res.status(500).json({ message: "Internal server error", error: error.message });
     }
   },
-  
 
-  //Delete a food
+  // Delete a food item
   deleteFood: async (req, res) => {
     try {
       const { id } = req.params;
@@ -240,6 +213,8 @@ const foodController = {
       if (!food) {
         return res.status(404).json({ message: "Food item not found" });
       }
+
+      // Remove the associated image file if it exists
       if (food.food_image && fs.existsSync(food.food_image)) {
         fs.unlinkSync(food.food_image);
       }

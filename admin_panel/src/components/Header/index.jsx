@@ -180,12 +180,12 @@
 /* eslint-disable react/prop-types */
 import { useState } from "react";
 import filterImg1 from "../../../src/assets/filtericon/filter1.png";
-// import placeholderLogo from "../../../src/assets/logo/placeholderLogo.jpg";
-import placeholderLogo from "../../../src/assets/logo/placeholderLogo1.png";
+// import placeholderLogo from "../../../src/assets/logo/placeholderLogo1.png";
 import "./index.css";
 import "primereact/resources/themes/lara-light-cyan/theme.css";
 import { IoSearchOutline } from "react-icons/io5";
 import Cookies from 'js-cookie';
+import { BASE_URL } from "../../services/BaseURL";
 
 export default function Header({
   headerTitle,
@@ -198,7 +198,11 @@ export default function Header({
   data,
 }) {
   const [isFilterOptionOpen, setIsFilterOptionOpen] = useState(false);
-  const RestaurantName =  Cookies.get("restaurantName")
+  const RestaurantName =  Cookies.get("restaurantName");
+  const RestaurantLogo = Cookies.get("restaurantLogo");
+  console.log(`${BASE_URL}/images${RestaurantLogo}`);
+
+  
 
   const filterItems = [
     "Today",
@@ -330,9 +334,9 @@ export default function Header({
 
         <div>
           <img
-            src={placeholderLogo}
+            src={`${BASE_URL}/images${RestaurantLogo}`}
             alt="logo"
-            className="w-6 md:w-7 lg:w-8 object-cover rounded-full"
+            className="w-6 md:w-7 lg:w-14 object-cover rounded-full border-2 border-orange-500"
           />
         </div>
 

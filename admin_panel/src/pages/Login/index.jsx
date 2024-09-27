@@ -25,18 +25,20 @@ export default function Login() {
     try {
       const userCredential = { email: data.adminEmail, password: data.adminPassword };
 
-      const response = await axios.post('https://digitalmenu-ax0i.onrender.com/api/v1/restaurant-admin/login', userCredential);
+      const response = await axios.post('http://localhost:5005/api/v1/restaurant-admin/login', userCredential);
 
-      // console.log(response)
+      console.log(response.data.data);
 
       // Assuming the API returns a token upon successful authentication
-      const { token, restaurantId, restaurantName } = response.data.data;
+      const { token, restaurantId, restaurantName, restaurantLogo } = response.data.data;
 
-      console.log('Authentication successful. Token:', token, "  id  ", restaurantId, restaurantName);
+
+      console.log('Authentication successful. Token:', token, " id:", restaurantId, "restaurant name : ", restaurantName, "Logo :", restaurantLogo);
 
       Cookies.set('token', token, { sameSite: 'None', secure: true });
       Cookies.set("restaurantName", restaurantName, { sameSite: 'None', secure: true });
       Cookies.set("restaurantId", restaurantId, { sameSite: 'None', secure: true });
+      Cookies.set("restaurantLogo", restaurantLogo, { sameSite: 'None', secure: true });
 
       navigate('/dashboard', { replace: true })
 

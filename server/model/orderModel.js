@@ -26,6 +26,13 @@ const orderSchema = new mongoose.Schema(
       required: true,
     },
     transectionId: String,
+    orderPlace:{
+      type:String,
+      enum:{
+        values : ["online","offline"]
+      },
+      default:"online"
+    },
     items: [
       {
         foodId: {

@@ -19,18 +19,20 @@ export default function MenuDetailsCard({
   const { view } = useContext(ViewContext);
   const { discountedPrice } = useContext(CartContext);
 
+  
   return (
     <div
       className={`flex ${view === "list" ? "flex-row h-[120px]" : "flex-col h-[180px]"
         }  shadow-lg rounded-xl`}
     >
+
       <img
         className={`${view === "list" ? "w-1/3 min-h-full" : "w-full h-1/3"
           } object-cover rounded-l-xl`}
         src={menuImage}
         alt={menuName}
       />
-
+     
       <div
         className={`relative ${view === "list" ? "w-2/3" : "w-full h-full"
           } flex flex-col gap-1 px-3 py-2`}
@@ -50,7 +52,7 @@ export default function MenuDetailsCard({
               <FontAwesomeIcon icon={faStar} className="text-yellow-500 text-xs" />
               <FontAwesomeIcon icon={faStar} className="text-yellow-500 text-xs" />
               <FontAwesomeIcon icon={faStarHalfAlt} className="text-yellow-500 text-xs" />
-              <span className="font-semibold text-xs"> (Popular)</span>
+              <span className="font-semibold text-xs"> ({'Popular'})</span>
             </span>
           )}
          </div>
@@ -89,10 +91,11 @@ export default function MenuDetailsCard({
               size="xs"
               className="text-primary"
             />
-            <span className="text-[10px] font-semibold">Add</span>
+            <span className="text-[10px] font-semibold">{'Add'}</span>
           </div>
         </div>
       </div>
     </div>
   );
 }
+ 

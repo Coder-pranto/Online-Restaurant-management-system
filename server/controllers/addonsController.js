@@ -1,11 +1,17 @@
+
+
 const Addons = require("../model/addonsModel");
 const fs = require("fs");
+const { compressImage } = require("../utils/imageCompressor"); // Assuming you have this utility function
 
 const addonsController = {
-  //-----------------------------------------------Create A new addons---------------------------------
+  // Create a new addon
   createAddons: async (req, res) => {
     try {
       if (req.file) {
+        // Compress the uploaded image
+        await compressImage(req.file.path);
+
         const { name, category, price, restaurantId } = req.body;
         const addonsImage = req.file.path;
         const addons = new Addons({ name, addonsImage, category, price, restaurantId });
@@ -19,11 +25,10 @@ const addonsController = {
     }
   },
 
-  //-------------------------------------------Get All The addons-------------------------------
-
+  // Get all addons
   listAddons: async (req, res) => {
     try {
-      const addons = await Addons.find({restaurantId: req.query.restaurantId})
+      const addons = await Addons.find({ restaurantId: req.query.restaurantId })
         .populate("category", "_id name")
         .exec();
       if (!addons) {
@@ -34,7 +39,8 @@ const addonsController = {
       res.status(500).json({ message: "Internal server error" });
     }
   },
-  //-------------------------------------------------------------Finds Addons BY Category Id---------------------------------------------
+
+  // Get addons by category ID
   addonByCategoryId: async (req, res) => {
     try {
       const categoryId = req.params.id;
@@ -50,7 +56,7 @@ const addonsController = {
     }
   },
 
-  //-----------------------------------------------------------------------Update a Addons------------------------------------------
+  // Update an addon
   updateAddons: async (req, res) => {
     try {
       const { id } = req.params;
@@ -62,13 +68,19 @@ const addonsController = {
       }
 
       if (req.file) {
+        // Delete the old image if it exists
         if (addons.addonsImage && fs.existsSync(addons.addonsImage)) {
           fs.unlinkSync(addons.addonsImage);
         }
 
+        // Compress the new image
+        await compressImage(req.file.path);
+
+        // Update the image path
         addons.addonsImage = req.file.path;
       }
 
+      // Update the other fields
       addons.name = name || addons.name;
       addons.price = price || addons.price;
       addons.category = category || addons.category;
@@ -81,8 +93,7 @@ const addonsController = {
     }
   },
 
-  // -------------------------------------------------- Delete a addon ------------------------------------------------
-
+  // Delete an addon
   deleteAddons: async (req, res) => {
     try {
       const { id } = req.params;
@@ -93,7 +104,7 @@ const addonsController = {
       }
 
       // Delete the associated image file
-      if (fs.existsSync(addons.addonsImage)) {
+      if (addons.addonsImage && fs.existsSync(addons.addonsImage)) {
         fs.unlinkSync(addons.addonsImage);
       }
 

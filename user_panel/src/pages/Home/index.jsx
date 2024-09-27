@@ -11,20 +11,23 @@ import Modal from "../../ui/Modals/Modal";
 import Loading from "../../ui/Loading/Loading";
 import FoodCard from "../../components/Home/FoodCard";
 
+
 export default function Home() {
+
   const [searchValue, setSearchValue] = useState("");
   const [selectedMenu, setSelectedMenu] = useState("All");
   const [selectedFood, setSelectedFood] = useState(null);
   const [openModal, setOpenModal] = useState(false);
   const { search } = useLocation();
 
-  /* <- Getting query params for show menu based on retaurantId -> */
+
+  /* <- Getting query params for show menu based on restaurantId -> */
   const queryParams = new URLSearchParams(search.toUpperCase());
   const restaurantId = queryParams.get("RESTAURANTID");
   const tableNumber = queryParams.get("TABLE");
   setCookie("resIdAndTableNo", { restaurantId, tableNumber });
 
-  /* <-Fetch Menu Data -> */
+  /* <- Fetch Menu Data -> */
   const {
     data: menus,
     loading,
@@ -56,7 +59,7 @@ export default function Home() {
         <input
           type="search"
           name="search"
-          placeholder="Search"
+          placeholder={'Search'}  // Add translation
           className="border-2 w-full text-sm pl-10 pr-2 py-2 rounded-md shadow-inner"
           onChange={(e) => setSearchValue(e.target.value)}
         />
@@ -72,7 +75,7 @@ export default function Home() {
 
       {/* <- Menu Sub Header -> */}
       {selectedMenu === "All" ? (
-        <SubHeader text="All Menu" />
+        <SubHeader text={'All Menu'} />  
       ) : (
         <SubHeader text={selectedMenu?.name} />
       )}

@@ -80,7 +80,7 @@ const Employee = () => {
     setLoading(true);
     try {
       const response = await axios.get(
-        `https://digitalmenu-ax0i.onrender.com/api/v1/employee?restaurantId=${restaurantId}`,
+        `http://localhost:5005/api/v1/employee?restaurantId=${restaurantId}`,
         {
           headers: {
             Authorization: `${authToken}`,
@@ -111,7 +111,7 @@ const Employee = () => {
       formData.append('restaurantId', restaurantId);
 
       await axios.post(
-        'https://digitalmenu-ax0i.onrender.com/api/v1/employee',
+        'http://localhost:5005/api/v1/employee',
         formData,
         {
           headers: {
@@ -140,7 +140,7 @@ const Employee = () => {
       formData.append('restaurantId', restaurantId);
 
       await axios.patch(
-        `https://digitalmenu-ax0i.onrender.com/api/v1/employee/${data.id}`,
+        `http://localhost:5005/api/v1/employee/${data.id}`,
         formData,
         {
           headers: {
@@ -161,7 +161,7 @@ const Employee = () => {
     if (window.confirm('Are you sure you want to delete this item?')) {
       try {
         await axios.delete(
-          `https://digitalmenu-ax0i.onrender.com/api/v1/employee/${id}`,
+          `http://localhost:5005/api/v1/employee/${id}`,
           {
             headers: {
               Authorization: `${authToken}`,
@@ -304,7 +304,7 @@ const Employee = () => {
                     <td className="py-3 px-4">
                       <div className="flex items-center gap-3">
                         <img
-                          src={`https://digitalmenu-ax0i.onrender.com/api/v1/${employee?.employeeImage}`}
+                          src={`http://localhost:5005/api/v1/${employee?.employeeImage}`}
                           className="w-10 h-10 rounded-full object-cover"
                         />
                         <span>{employee.name}</span>

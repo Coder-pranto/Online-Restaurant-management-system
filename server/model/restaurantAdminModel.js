@@ -82,21 +82,21 @@ const restaurantAdminSchema = new mongoose.Schema(
   }
 );
 
-restaurantAdminSchema.pre('save', async function (next) {
-  try {
-    if (this.isModified('password')) {
-      const salt = await bcrypt.genSalt(10);
-      this.password = await bcrypt.hash(this.password, salt);
-    }
-    // Validate restaurantRadius value before saving
-    if (this.restaurantRadius && isNaN(this.restaurantRadius?.value)) {
-      throw new Error('Invalid restaurantRadius value. Must be a number.');
-    }
-    next();
-  } catch (error) {
-    next(error);
-  }
-})
+// restaurantAdminSchema.pre('save', async function (next) {
+//   try {
+//     if (this.isModified('password')) {
+//       const salt = await bcrypt.genSalt(10);
+//       this.password = await bcrypt.hash(this.password, salt);
+//     }
+//     // Validate restaurantRadius value before saving
+//     if (this.restaurantRadius && isNaN(this.restaurantRadius?.value)) {
+//       throw new Error('Invalid restaurantRadius value. Must be a number.');
+//     }
+//     next();
+//   } catch (error) {
+//     next(error);
+//   }
+// })
 
 const RestaurantAdmin = new mongoose.model("restaurantAdmin", restaurantAdminSchema);
 module.exports = RestaurantAdmin;

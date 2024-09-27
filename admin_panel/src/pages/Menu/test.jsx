@@ -35,10 +35,10 @@ export default function Menu() {
     try {
       setLoading(true);
       const response = await axios.get(
-        `https://digitalmenu-ax0i.onrender.com/api/v1/category?restaurantId=${restaurantId}`
+        `http://localhost:5005/api/v1/category?restaurantId=${restaurantId}`
       );
       const response2 = await axios.get(
-        `https://digitalmenu-ax0i.onrender.com/api/v1/food?restaurantId=${restaurantId}`
+        `http://localhost:5005/api/v1/food?restaurantId=${restaurantId}`
       );
       setMenus(response.data);
       setTotalItems(response2.data.filter((x) => x.categoryId !== null).length);
@@ -117,7 +117,7 @@ export default function Menu() {
 
       // Send POST request to create a new category
       await axios.post(
-        "https://digitalmenu-ax0i.onrender.com/api/v1/category",
+        "http://localhost:5005/api/v1/category",
         formData,
         {
           headers: {
@@ -157,7 +157,7 @@ export default function Menu() {
     try {
       const menuId = data._id;
       await axios.delete(
-        `https://digitalmenu-ax0i.onrender.com/api/v1/category/${menuId}`,
+        `http://localhost:5005/api/v1/category/${menuId}`,
         {
           headers: {
             Authorization: `${authToken}`,
@@ -192,7 +192,7 @@ export default function Menu() {
       // console.log(formData);
 
       await axios.patch(
-        `https://digitalmenu-ax0i.onrender.com/api/v1/category/${updatedMenu._id}`,
+        `http://localhost:5005/api/v1/category/${updatedMenu._id}`,
         formData,
         {
           headers: {
@@ -266,7 +266,7 @@ export default function Menu() {
                   )}
 
                   <img
-                    src={`https://digitalmenu-ax0i.onrender.com/api/v1/${menu.category_image}`}
+                    src={`http://localhost:5005/api/v1/${menu.category_image}`}
                     className="w-full h-[75%] object-cover rounded-t-lg"
                     onClick={() => navigate(`/menu-details/${menu._id}`)}
                   />

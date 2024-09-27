@@ -58,7 +58,7 @@ export default function Expenses() {
   const fetchExpensesData = async () => {
     setLoading(true);
     const response = await axios.get(
-      `https://digitalmenu-ax0i.onrender.com/api/v1//expense?restaurantId=${restaurantId}`,
+      `http://localhost:5005/api/v1//expense?restaurantId=${restaurantId}`,
       {
         headers: {
           Authorization: `${authToken}`,
@@ -86,7 +86,7 @@ export default function Expenses() {
       };
       console.log(expensesData);
       const response = await axios.post(
-        "https://digitalmenu-ax0i.onrender.com/api/v1/expense",
+        "http://localhost:5005/api/v1/expense",
         expensesData,
         {
           headers: {
@@ -115,7 +115,7 @@ export default function Expenses() {
       };
       // console.log(updateExpensesData);
       const response = await axios.patch(
-        `https://digitalmenu-ax0i.onrender.com/api/v1/expense/${data.id}`,
+        `http://localhost:5005/api/v1/expense/${data.id}`,
         updateExpensesData,
         {
           headers: {
@@ -140,7 +140,7 @@ export default function Expenses() {
       // /employee/65a4365368955007495f0c40
       try {
         const response = await axios.delete(
-          `https://digitalmenu-ax0i.onrender.com/api/v1/expense/${id}`,
+          `http://localhost:5005/api/v1/expense/${id}`,
 
           {
             headers: {
@@ -292,8 +292,8 @@ export default function Expenses() {
                         <li
                           key={index}
                           className={`  text-sm  p-2 hover:text-[#FFA901] cursor-pointer ${index !== filterItems.length - 1
-                              ? "border-b-[1px] border-[#aaa]"
-                              : ""
+                            ? "border-b-[1px] border-[#aaa]"
+                            : ""
                             }`}
                           onClick={() => handleDateFilter(item)}
                         >

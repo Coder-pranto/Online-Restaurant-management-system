@@ -58,7 +58,7 @@ const GenerateQRCodePage = () => {
         };
 
         const response = await axios.post(
-          `https://digitalmenu-ax0i.onrender.com/api/v1/generateQrCode/${i}`,
+          `http://localhost:5005/api/v1/generateQrCode/${i}`,
           QRData,
           {
             headers: {

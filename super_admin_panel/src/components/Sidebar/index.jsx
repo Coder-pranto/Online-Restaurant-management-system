@@ -20,7 +20,7 @@ const Sidebar = () => {
     return (
         <div className={` h-[100vh] bg-orange-200 text-blue-900 ${isMenuOpen ? 'w-[20%] overflow-hidden' : 'w-[50px]'}`}>
             <div className='flex items-center justify-between text-2xl font-bold mb-5 border-b-[1px] border-orange-500 p-3'>
-                <h2 className={`cursor-pointer ${isMenuOpen ? 'block' : 'hidden'}`}>E-food</h2>
+                <h2 className={`cursor-pointer ${isMenuOpen ? 'block' : 'hidden'}`}>DigitalMenu</h2>
                 <Icon
                     icon={
                         `${isMenuOpen

@@ -28,7 +28,7 @@ export default function Payment() {
   const [locationError, setLocationError] = useState("");
 
   const navigate = useNavigate();
-  const socket = io("https://api.efood.tailormaster.xyz");
+  const socket = io("https://digitalmenu-ax0i.onrender.com");
   // const socket = io("http://localhost:5005");
 
   /* <- Getting Location of user -> */

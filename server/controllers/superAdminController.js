@@ -7,6 +7,7 @@ const generateJwtToken = require("../utils/generateJwtToken");
 // super admin login
 const superAdminLoginController = async (req, res, next) => {
     try {
+        
         const { email, password } = req.body;
         const superAdmin = await superAdminService.getSuperAdminService(email)
 

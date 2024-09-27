@@ -1,4 +1,6 @@
 const express = require("express");
+const router = express.Router();
+
 const categoryRoute = require("./categoryRoute");
 const foodRoute = require("./foodRoute");
 const addonsRoute = require("./addonsRoute");
@@ -13,7 +15,6 @@ const restaurantAdminRouter = require("./restaurantAdminRoute");
 const superAdminRouter = require("./superAdminRoute");
 const verifyJWTToken = require("../../middleware/userVerify");
 
-const router = express.Router();
 
 router.use("/home_page_settings", homePageSettingRoute);
 router.use("/category", categoryRoute);

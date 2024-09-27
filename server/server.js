@@ -4,7 +4,7 @@ const dbConnection = require("./utils/dbConnect");
 const http = require("http");
 const socketIO = require("socket.io");
 const realTimeOrderProcessWithSocketIo = require("./utils/realTimeOrderProcess");
-// require("dotenv").config();
+
 
 const server = http.createServer(app);
 const PORT = process.env.PORT || 5005;

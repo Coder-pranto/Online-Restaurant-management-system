@@ -182,6 +182,29 @@ const orderController = {
     }
   },
 
+  createTableOrder : async (req, res) => {
+    try {
+      const { tableNumber, items, totalPrice, totalNumberOfFood, restaurantId } = req.body;
+  
+      const newOrder = new Order({
+        tableNumber,
+        items,
+        totalPrice,
+        totalNumberOfFood,
+        restaurantId,
+        status:'approved',
+        paymentMethod: 'offline', 
+        paymentStatus: 'approved', 
+      });
+  
+      await newOrder.save();
+      
+      res.status(201).json({ message: 'Order created successfully', order: newOrder });
+    } catch (error) {
+      console.error('Error creating order:', error.message);
+      res.status(500).json({ message: 'Internal server error' });
+    }
+  },
   // -------------------------------------------------- Update A Order ------------------------------------------------
   // updateOrder: async (req, res) => {
   //   try {

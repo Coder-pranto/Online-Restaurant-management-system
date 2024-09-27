@@ -1,14 +1,14 @@
 import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom'; // Import useNavigate
 import { FaPlus, FaMinus, FaTrashAlt } from 'react-icons/fa';
-import axios from 'axios'; 
-import Cookies from 'js-cookie'; 
+import axios from 'axios';
+import Cookies from 'js-cookie';
 import Header from '../../components/Header';
 import Payment from './Payment';
 
 const MenuSelection = () => {
   const location = useLocation();
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
   const { selectedTable } = location.state || {};
 
   const [selectedCategory, setSelectedCategory] = useState('all');
@@ -16,7 +16,7 @@ const MenuSelection = () => {
   const [menus, setMenus] = useState([]);
   const [categories, setCategories] = useState(['all']);
   const [loading, setLoading] = useState(true);
-  const [showPayment, setShowPayment] = useState(false); 
+  const [showPayment, setShowPayment] = useState(false);
 
   const restaurantId = Cookies.get("restaurantId");
 
@@ -24,13 +24,14 @@ const MenuSelection = () => {
     try {
       setLoading(true);
       const categoryResponse = await axios.get(
-        `https://digitalmenu-ax0i.onrender.com/api/v1/category?restaurantId=${restaurantId}`
+        `http://localhost:5005/api/v1/category?restaurantId=${restaurantId}`
       );
       const foodResponse = await axios.get(
-        `https://digitalmenu-ax0i.onrender.com/api/v1/food?restaurantId=${restaurantId}`
+        `http://localhost:5005/api/v1/food?restaurantId=${restaurantId}`
       );
 
       const fetchedCategories = ['all', ...new Set(categoryResponse.data.map(cat => cat.name))];
+
       setCategories(fetchedCategories);
       setMenus(foodResponse.data);
       setLoading(false);
@@ -60,7 +61,7 @@ const MenuSelection = () => {
   };
 
   const handleIncrementOrder = (itemId) => {
-    setOrder(order.map(item => 
+    setOrder(order.map(item =>
       item._id === itemId ? { ...item, quantity: item.quantity + 1 } : item
     ));
   };
@@ -82,14 +83,39 @@ const MenuSelection = () => {
   const serviceCharge = totalCost * 0; // use as a vat charge
   const finalTotal = totalCost + serviceCharge;
 
-  const handleProceedToPayment = () => {
+  // const handleProceedToPayment = () => {
+  //   if (order.length > 0) {
+  //     setShowPayment(true);  // Show the Payment component when "Proceed to Payment" is clicked
+  //   }
+  // };
+
+  const handleProceedToPayment = async () => {
     if (order.length > 0) {
-      setShowPayment(true);  // Show the Payment component when "Proceed to Payment" is clicked
+      try {
+        const orderData = {
+          tableNumber: selectedTable,
+          items: order.map(item => ({
+            foodId: item._id,
+            quantity: item.quantity,
+            itemPrice: item.price,
+          })),
+          totalPrice: finalTotal,
+          totalNumberOfFood: order.reduce((total, item) => total + item.quantity, 0),
+          restaurantId: restaurantId,
+        };
+        const { data } = await axios.post('http://localhost:5005/api/v1/order/table', orderData);
+        console.log("order data :", data);
+
+        setShowPayment(true);  // Show the Payment component after successfully creating the order
+      } catch (error) {
+        console.error('Error creating order:', error.message);
+      }
     }
   };
 
+
   const handleBackButtonClick = () => {
-    navigate('/table-order'); 
+    navigate('/table-order');
   };
 
   return (
@@ -101,19 +127,21 @@ const MenuSelection = () => {
           <h1 className="text-3xl font-semibold mb-6 text-gray-800">Menu Selection for -&gt; Table {selectedTable}</h1>
 
           {/* Display food categories */}
-          <div className="mb-6 flex justify-center space-x-4">
-            {categories.map((category) => (
-              <button
-                key={category}
-                className={`py-2 px-4 rounded-lg shadow-md transition-colors duration-300 ${
-                  selectedCategory === category ? 'bg-orange-500 text-white' : 'bg-gray-200 text-gray-700 hover:bg-orange-200'
-                }`}
-                onClick={() => setSelectedCategory(category)}
-              >
-                {category.charAt(0).toUpperCase() + category.slice(1)}
-              </button>
-            ))}
+          <div className="mb-6 mx-auto max-w-2xl flex justify-start overflow-x-auto ">
+            <div className="flex space-x-4 mx-4">
+              {categories.map((category) => (
+                <button
+                  key={category}
+                  className={`py-2 px-4 rounded-lg shadow-md transition-colors duration-300 ${selectedCategory === category ? 'bg-orange-500 text-white' : 'bg-gray-200 text-gray-700 hover:bg-orange-200'
+                    }`}
+                  onClick={() => setSelectedCategory(category)}
+                >
+                  {category.charAt(0).toUpperCase() + category.slice(1)}
+                </button>
+              ))}
+            </div>
           </div>
+
 
           {/* Display menu items */}
           {loading ? (
@@ -124,7 +152,7 @@ const MenuSelection = () => {
                 .filter((item) => selectedCategory === 'all' || item.categoryId.name === selectedCategory)
                 .map((item) => (
                   <div key={item._id} className="p-6 bg-white border rounded-lg shadow-lg hover:shadow-xl transition-shadow">
-                    <img src={`https://digitalmenu-ax0i.onrender.com/api/v1/${item.food_image}`} alt={item.name} className="w-full h-32 sm:h-48 object-cover rounded-t-lg mb-4" />
+                    <img src={`http://localhost:5005/api/v1/${item.food_image}`} alt={item.name} className="w-full h-32 sm:h-48 object-cover rounded-t-lg mb-4" />
                     <h2 className="text-xl font-semibold text-gray-800">{item.name}</h2>
                     <p className="text-gray-600 mt-2">Price: <span className="font-bold text-gray-800">৳{item.price}</span></p>
                     <label className="flex items-center mt-4">
@@ -179,10 +207,11 @@ const MenuSelection = () => {
             <h4 className="text-md mt-2">Vat (0%): <span className="text-gray-800">৳{serviceCharge.toFixed(2)}</span></h4>
             <h4 className="text-lg font-bold mt-4">Final Total: <span className="text-orange-500">৳{finalTotal.toFixed(2)}</span></h4>
           </div>
+
           <button
             onClick={handleProceedToPayment}
-            disabled={order.length === 0} // Disable button if no items are selected
-            className="mt-6 w-full py-3 bg-[#F97316] text-white font-semibold rounded-lg shadow hover:bg-green-600 transition"
+            disabled={order.length === 0}
+            className="mt-6 w-full py-3 bg-[#F97316] text-white font-semibold rounded-lg shadow hover:bg-green-600 transition disabled:bg-gray-400"
           >
             Proceed to Payment
           </button>
@@ -193,22 +222,23 @@ const MenuSelection = () => {
             className="mt-4 w-full py-3 bg-gray-500 text-white font-semibold rounded-lg shadow hover:bg-gray-600 transition"
           >
             Back to Table Orders
-            </button>
-      
-      {/* Conditionally render the Payment component */}
-      {showPayment && (
-        <Payment 
-          order={order}
-          totalCost={totalCost}
-          serviceCharge={serviceCharge}
-          finalTotal={finalTotal}
-          selectedTable={selectedTable}
-          orderNumber={Math.floor(Math.random() * 1000000)}  // example order number
-        />
-      )}
+          </button>
+
+          {/* Conditionally render the Payment component */}
+          {showPayment && (
+            <Payment
+              order={order}
+              totalCost={totalCost}
+              serviceCharge={serviceCharge}
+              finalTotal={finalTotal}
+              selectedTable={selectedTable}
+              orderNumber={Math.floor(Math.random() * 1000000)}  // example order number
+            />
+          )}
+        </div>
+      </div>
     </div>
-  </div>
-</div>
-); };
+  );
+};
 
 export default MenuSelection;

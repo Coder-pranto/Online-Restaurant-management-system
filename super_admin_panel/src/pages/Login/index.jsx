@@ -17,16 +17,20 @@ const Login = () => {
       const credential = { email, password };
       const data = await axios.post(`${baseUrl}/super-admin/login`, credential);
       if (data.data.status === 'success') {
-        cookies.set('email', data.data.data.email, { path: '/' });
-        cookies.set('adminToken', data.data.data.token);
+        const expirationTime = new Date();
+        expirationTime.setTime(expirationTime.getTime() + 1 * 60 * 60 * 1000); 
+  
+        cookies.set('email', data.data.data.email, { path: '/', expires: expirationTime });
+        cookies.set('adminToken', data.data.data.token, { path: '/', expires: expirationTime });
         navigate('/manage-admin');
-        enqueueSnackbar('Login Successfull');
+        enqueueSnackbar('Login Successful', { variant: 'success' });
       }
     } catch (error) {
-      enqueueSnackbar('Login Failed');
-      console.log(error);
+      enqueueSnackbar('Login Failed', { variant: 'error' });
+      console.log(error.message);
     }
   };
+  
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">

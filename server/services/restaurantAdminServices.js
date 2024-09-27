@@ -33,7 +33,7 @@ const getAllRestaurantAdminService = async (page, pageSize) => {
 // get specific restaurant admin service by super admin
 const getSpecificRestaurantAdminService = async(restaurantId) => {
     const result = await RestaurantAdmin.findOne({restaurantId});
-    console.log(result)
+    console.log(result);
     return result;
 }
 
